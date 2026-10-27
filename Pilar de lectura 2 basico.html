@@ -1,0 +1,1324 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pilar de Lectura - Velocidad y Fluidez Lectora (2° Básico)</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts: Fredoka y Nunito para diseño infantil y fácil lectura -->
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Nunito:wght@600;700;800&display=swap" rel="stylesheet">
+    <!-- Canvas Confetti -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        kiddoYellow: '#FFD166',
+                        kiddoOrange: '#FF9F1C',
+                        kiddoGreen: '#06D6A0',
+                        kiddoBlue: '#118AB2',
+                        kiddoPurple: '#8338EC',
+                        kiddoPink: '#FF006E'
+                    },
+                    fontFamily: {
+                        fredoka: ['Fredoka', 'sans-serif'],
+                        nunito: ['Nunito', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Nunito', sans-serif;
+            background-color: #F7F9FC;
+            background-image: radial-gradient(#e2e8f0 1.5px, transparent 1.5px);
+            background-size: 24px 24px;
+        }
+        h1, h2, h3, .font-title {
+            font-family: 'Fredoka', sans-serif;
+        }
+        /* Resaltado de lectura */
+        .word-bubble {
+            display: inline-block;
+            padding: 4px 10px;
+            margin: 4px;
+            border-radius: 12px;
+            font-size: 1.5rem;
+            line-height: 2rem;
+            cursor: pointer;
+            transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+            user-select: none;
+            border: 2px solid transparent;
+        }
+        .word-bubble:hover {
+            transform: scale(1.08);
+            background-color: #E2E8F0;
+        }
+        .word-bubble.read {
+            background-color: #D1FAE5;
+            color: #065F46;
+            border-color: #10B981;
+        }
+        .word-bubble.active {
+            background-color: #FEF08A;
+            color: #854D0E;
+            border-color: #EAB308;
+            transform: scale(1.15);
+            font-weight: bold;
+            box-shadow: 0 4px 12px rgba(234, 179, 8, 0.35);
+        }
+        .bounce-gentle {
+            animation: bounce 2s infinite;
+        }
+        @keyframes bounce {
+            0%, 100% { transform: translateY(-3%); }
+            50% { transform: translateY(0); }
+        }
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1; 
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #118AB2; 
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body class="min-h-screen text-slate-800 flex flex-col justify-between selection:bg-yellow-200">
+
+    <!-- Header Navigation -->
+    <header class="bg-white border-b-4 border-kiddoBlue/20 sticky top-0 z-50 shadow-sm">
+        <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
+            <div class="flex items-center space-x-3 cursor-pointer" onclick="showSection('welcome')">
+                <div class="bg-amber-100 text-amber-900 w-12 h-12 rounded-2xl flex items-center justify-center font-title text-2xl font-bold shadow-md transform -rotate-3 overflow-hidden border-2 border-amber-300">
+                    <svg class="w-10 h-10 mt-1" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M18 28C18 16 23 10 32 10C41 10 46 16 46 28C46 32 48 38 50 42C51 44 49 46 47 46H17C15 46 13 44 14 42C16 38 18 32 18 28Z" fill="#7C2D12"/>
+                        <ellipse cx="32" cy="30" rx="11" ry="12" fill="#FDBA74"/>
+                        <path d="M21 24C25 21 28 25 32 21C36 25 39 21 43 24C43 20 38 15 32 15C26 15 21 20 21 24Z" fill="#7C2D12"/>
+                        <circle cx="28" cy="29" r="1.5" fill="#1E293B"/>
+                        <circle cx="36" cy="29" r="1.5" fill="#1E293B"/>
+                        <path d="M29 34C30.5 35.5 33.5 35.5 35 34" stroke="#E11D48" stroke-width="1.5" stroke-linecap="round"/>
+                        <rect x="24" y="26" width="7" height="6" rx="2" stroke="#0284C7" stroke-width="1.5" fill="none"/>
+                        <rect x="33" y="26" width="7" height="6" rx="2" stroke="#0284C7" stroke-width="1.5" fill="none"/>
+                        <line x1="31" y1="29" x2="33" y2="29" stroke="#0284C7" stroke-width="1.5"/>
+                        <path d="M28 41L32 44L36 41" stroke="#FDBA74" stroke-width="2"/>
+                        <path d="M20 46C20 46 24 40 32 40C40 40 44 46 44 46V54H20V46Z" fill="#0D9488"/>
+                    </svg>
+                </div>
+                <div>
+                    <h1 class="text-2xl font-bold text-kiddoBlue leading-none tracking-wide">
+                        <i class="fa-solid fa-heart text-pink-500 text-sm align-middle mr-0.5"></i>Pilar<i class="fa-solid fa-heart text-pink-500 text-sm align-middle ml-0.5"></i> de Lectura
+                    </h1>
+                    <span class="text-xs font-bold text-kiddoOrange bg-orange-100 px-2 py-0.5 rounded-full">2° Básico</span>
+                </div>
+            </div>
+
+            <!-- Stats Bar Header -->
+            <div class="flex items-center space-x-4">
+                <div class="flex items-center space-x-1.5 bg-yellow-100 border-2 border-yellow-300 px-3 py-1 rounded-2xl text-amber-800 font-bold text-sm sm:text-base">
+                    <i class="fa-solid fa-star text-yellow-500 text-lg"></i>
+                    <span id="headerStars">0</span>
+                </div>
+                <button onclick="showStatsModal()" class="bg-purple-100 hover:bg-purple-200 border-2 border-purple-300 px-3 py-1 rounded-2xl text-purple-800 font-bold text-sm sm:text-base flex items-center space-x-1.5 transition">
+                    <i class="fa-solid fa-trophy text-purple-600"></i>
+                    <span class="hidden sm:inline">Mis Logros</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="max-w-5xl mx-auto px-4 py-6 flex-grow w-full">
+
+        <!-- SECTION 1: WELCOME / STORY SELECTOR -->
+        <section id="sec-welcome" class="space-y-6">
+            <!-- Hero Banner -->
+            <div class="bg-gradient-to-r from-sky-400 via-blue-500 to-indigo-600 rounded-3xl p-6 sm:p-8 text-white shadow-xl relative overflow-hidden flex flex-col md:flex-row items-center justify-between">
+                <div class="z-10 space-y-3 text-center md:text-left max-w-xl">
+                    <span class="bg-white/20 backdrop-blur-md px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider">¡Aventura Lectora! 🚀</span>
+                    <h2 class="text-3xl sm:text-4xl font-extrabold font-title leading-tight">¡Aprende a leer más rápido y con mayor fluidez!</h2>
+                    <p class="text-sky-100 text-base sm:text-lg">Selecciona un cuento, activa el temporizador de 1 minuto y practica tus palabras por minuto (PPM).</p>
+                    <div class="pt-2">
+                        <a href="#storiesGrid" class="inline-block bg-kiddoYellow hover:bg-amber-300 text-slate-900 font-title font-bold text-lg px-6 py-3 rounded-2xl shadow-lg transition transform hover:-translate-y-1">
+                            <i class="fa-solid fa-play mr-2"></i>¡Empezar a Leer!
+                        </a>
+                    </div>
+                </div>
+                <div class="relative mt-6 md:mt-0 z-10 flex-shrink-0">
+                    <div class="w-36 h-36 sm:w-44 sm:h-44 bg-white/10 rounded-full flex items-center justify-center border-4 border-white/30 backdrop-blur-sm bounce-gentle">
+                        <i class="fa-solid fa-dragon text-7xl text-kiddoYellow drop-shadow-md"></i>
+                    </div>
+                </div>
+                <div class="absolute -right-10 -bottom-10 w-48 h-48 bg-white/10 rounded-full blur-xl"></div>
+                <div class="absolute top-0 left-1/3 w-32 h-32 bg-yellow-300/20 rounded-full blur-lg"></div>
+            </div>
+
+            <!-- Target Goal Info Card -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="bg-amber-50 border-2 border-amber-200 rounded-2xl p-4 flex items-center space-x-4">
+                    <div class="bg-amber-400 text-white p-3 rounded-xl text-xl">
+                        <i class="fa-solid fa-gauge-high"></i>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-amber-900 font-title">Meta de 2° Básico</h4>
+                        <p class="text-xs text-amber-700">Meta recomendada: **60 a 84 palabras por minuto**.</p>
+                    </div>
+                </div>
+                <div class="bg-emerald-50 border-2 border-emerald-200 rounded-2xl p-4 flex items-center space-x-4">
+                    <div class="bg-emerald-500 text-white p-3 rounded-xl text-xl">
+                        <i class="fa-solid fa-clock"></i>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-emerald-900 font-title">Desafío 1 Minuto</h4>
+                        <p class="text-xs text-emerald-700">Lee lo más fluido posible durante 60 segundos.</p>
+                    </div>
+                </div>
+                <div class="bg-purple-50 border-2 border-purple-200 rounded-2xl p-4 flex items-center space-x-4">
+                    <div class="bg-purple-500 text-white p-3 rounded-xl text-xl">
+                        <i class="fa-solid fa-brain"></i>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-purple-900 font-title">Comprensión</h4>
+                        <p class="text-xs text-purple-700">Responde preguntas para ganar estrellas extras.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Story Cards List -->
+            <div id="storiesGrid" class="pt-4 space-y-4">
+                <div class="flex items-center justify-between">
+                    <h3 class="text-2xl font-bold font-title text-slate-800 flex items-center gap-2">
+                        <i class="fa-solid fa-book-bookmark text-kiddoBlue"></i> Elige tu Lectura
+                    </h3>
+                    <span class="text-sm font-semibold text-slate-500" id="storyCountLabel">20 Lecturas disponibles</span>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5" id="storiesCardsContainer">
+                    <!-- Cards populated by JS -->
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 2: READING ROOM (PRACTICE / TIMER) -->
+        <section id="sec-reading" class="hidden space-y-6">
+            <!-- Top Toolbar -->
+            <div class="bg-white border-2 border-slate-200 rounded-2xl p-4 shadow-sm flex flex-col sm:flex-row items-center justify-between gap-4">
+                <button onclick="showSection('welcome')" class="text-slate-600 hover:text-slate-900 font-bold flex items-center gap-2 bg-slate-100 hover:bg-slate-200 px-4 py-2 rounded-xl transition text-sm">
+                    <i class="fa-solid fa-arrow-left"></i> Volver a lecturas
+                </button>
+
+                <!-- Audio Reader / Voice Synthesis -->
+                <div class="flex items-center space-x-2">
+                    <button id="btnReadAloud" onclick="toggleReadAloud()" class="bg-sky-100 hover:bg-sky-200 text-sky-800 font-bold px-3 py-2 rounded-xl text-xs sm:text-sm flex items-center gap-2 transition">
+                        <i class="fa-solid fa-volume-high text-sky-600"></i> Escuchar Cuento
+                    </button>
+                    <button id="btnGuideSpeed" onclick="changeGuideSpeed()" class="bg-slate-100 text-slate-700 font-bold px-3 py-2 rounded-xl text-xs sm:text-sm">
+                        Velocidad: <span id="speedLabel">Normal</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Reading Header Card -->
+            <div class="bg-white rounded-3xl border-2 border-slate-200 shadow-md p-6 relative">
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-100 pb-4 mb-4">
+                    <div class="flex items-center space-x-3">
+                        <span id="storyIcon" class="text-4xl bg-orange-100 p-3 rounded-2xl">🐱</span>
+                        <div>
+                            <h2 id="storyTitle" class="text-2xl sm:text-3xl font-title font-bold text-slate-800">Título de la Lectura</h2>
+                            <p class="text-xs text-slate-500 flex items-center gap-3">
+                                <span><i class="fa-solid fa-font text-kiddoBlue"></i> Total palabras: <strong id="storyTotalWords" class="text-slate-700">0</strong></span>
+                                <span><i class="fa-solid fa-signal text-kiddoGreen"></i> Dificultad: <strong id="storyDifficulty" class="text-slate-700">Fácil</strong></span>
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Timer & Mic Widget -->
+                    <div class="flex flex-wrap items-center gap-3 justify-center sm:justify-end">
+                        <button id="btnToggleMic" onclick="toggleSpeechRecognition()" class="bg-rose-100 hover:bg-rose-200 text-rose-700 border-2 border-rose-300 font-bold px-4 py-3 rounded-2xl text-sm flex items-center gap-2 transition shadow-sm">
+                            <i class="fa-solid fa-microphone text-rose-600 text-lg"></i>
+                            <span id="micStatusText">Activar Micrófono</span>
+                        </button>
+
+                        <div class="bg-slate-900 text-white px-6 py-3 rounded-2xl flex items-center space-x-4 shadow-inner">
+                            <div class="text-center">
+                                <span class="block text-[10px] text-slate-400 font-bold uppercase tracking-wider">Tiempo</span>
+                                <span id="timerDisplay" class="font-title text-3xl font-bold text-kiddoYellow tracking-wider">01:00</span>
+                            </div>
+                            <div class="h-8 w-0.5 bg-slate-700"></div>
+                            <button id="btnStartTimer" onclick="toggleTimer()" class="bg-kiddoGreen hover:bg-emerald-400 text-slate-900 font-title font-bold px-4 py-2 rounded-xl text-base shadow transition transform active:scale-95">
+                                <i class="fa-solid fa-play mr-1"></i> Iniciar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Mode Indicator / Help -->
+                <div id="micInfoBanner" class="bg-blue-50 border border-blue-200 rounded-xl p-3 mb-4 flex items-center justify-between text-xs sm:text-sm text-blue-800">
+                    <div class="flex items-center space-x-2">
+                        <i class="fa-solid fa-circle-info text-sky-500 text-base"></i>
+                        <span><strong>Instrucciones:</strong> Presiona <strong>Activar Micrófono</strong> para leer en voz alta con seguimiento automático ultrarrápido, o haz clic en las palabras.</span>
+                    </div>
+                </div>
+
+                <!-- Story Interactive Reader Box -->
+                <div id="storyContainer" class="bg-amber-50/50 border-2 border-dashed border-amber-200/80 rounded-2xl p-6 min-h-[220px] text-justify leading-relaxed">
+                    <!-- Text word bubbles rendered dynamically -->
+                </div>
+
+                <!-- Live Word Counter & Action -->
+                <div class="mt-6 flex flex-col sm:flex-row items-center justify-between gap-4 bg-slate-50 p-4 rounded-2xl border border-slate-200">
+                    <div class="flex items-center space-x-4 text-slate-700">
+                        <div class="bg-white border px-4 py-2 rounded-xl text-center shadow-sm">
+                            <span class="text-xs text-slate-400 font-bold block uppercase">Palabras Leídas</span>
+                            <span id="readWordsCount" class="text-2xl font-bold font-title text-kiddoBlue">0</span>
+                        </div>
+                        <div class="bg-white border px-4 py-2 rounded-xl text-center shadow-sm">
+                            <span class="text-xs text-slate-400 font-bold block uppercase">Velocidad Estimada</span>
+                            <span id="livePPM" class="text-2xl font-bold font-title text-kiddoOrange">0 <span class="text-xs">PPM</span></span>
+                        </div>
+                    </div>
+
+                    <button onclick="finishReadingSession()" class="w-full sm:w-auto bg-kiddoPurple hover:bg-purple-700 text-white font-title font-bold px-6 py-3 rounded-xl text-lg shadow-md transition transform hover:-translate-y-0.5">
+                        <i class="fa-solid fa-circle-check mr-2"></i> ¡Terminé de Leer!
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 3: COMPREHENSION QUIZ -->
+        <section id="sec-quiz" class="hidden space-y-6">
+            <div class="bg-white rounded-3xl border-2 border-slate-200 shadow-xl p-6 sm:p-8 max-w-2xl mx-auto space-y-6">
+                <div class="text-center space-y-2">
+                    <span class="bg-purple-100 text-purple-700 font-bold text-xs px-3 py-1 rounded-full uppercase">Paso 2: Comprensión Lectora</span>
+                    <h2 class="text-3xl font-bold font-title text-slate-800">¿Cuánto entendiste de la lectura?</h2>
+                    <p class="text-slate-500 text-sm">Responde estas sencillas preguntas para ganar estrellas adicionales.</p>
+                </div>
+
+                <div id="quizQuestionsContainer" class="space-y-6">
+                    <!-- Dynamic Questions -->
+                </div>
+
+                <div class="pt-4 border-t border-slate-100 flex justify-end">
+                    <button onclick="evaluateQuiz()" class="bg-kiddoGreen hover:bg-emerald-500 text-slate-900 font-title font-bold text-lg px-8 py-3 rounded-2xl shadow-lg transition transform hover:scale-105">
+                        Ver Mi Resultado <i class="fa-solid fa-arrow-right ml-2"></i>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 4: FINAL RESULTS SUMMARY -->
+        <section id="sec-results" class="hidden space-y-6">
+            <div class="bg-white rounded-3xl border-2 border-slate-200 shadow-xl p-6 sm:p-8 max-w-2xl mx-auto text-center space-y-6 relative overflow-hidden">
+                <div id="resultBadge" class="w-24 h-24 bg-yellow-100 text-yellow-500 rounded-full flex items-center justify-center text-5xl mx-auto border-4 border-yellow-300 bounce-gentle shadow-inner">
+                    🌟
+                </div>
+
+                <div>
+                    <h2 id="resultTitle" class="text-3xl font-bold font-title text-slate-800">¡Gran Trabajo!</h2>
+                    <p id="resultSubtitle" class="text-slate-500 text-base mt-1">Has completado tu ejercicio de fluidez lectora.</p>
+                </div>
+
+                <div class="grid grid-cols-2 sm:grid-cols-3 gap-4">
+                    <div class="bg-blue-50 border-2 border-blue-200 p-4 rounded-2xl">
+                        <span class="text-xs text-blue-600 font-bold uppercase block">Velocidad</span>
+                        <span id="resPPM" class="text-3xl font-extrabold font-title text-blue-700">0</span>
+                        <span class="text-xs text-blue-500 block font-semibold">PPM (Palabras/Min)</span>
+                    </div>
+
+                    <div class="bg-emerald-50 border-2 border-emerald-200 p-4 rounded-2xl">
+                        <span class="text-xs text-emerald-600 font-bold uppercase block">Nivel Fluidez</span>
+                        <span id="resLevel" class="text-xl font-extrabold font-title text-emerald-700 mt-1 block">Adecuado</span>
+                        <span class="text-[10px] text-emerald-600 block">Según 2° Básico</span>
+                    </div>
+
+                    <div class="bg-purple-50 border-2 border-purple-200 p-4 rounded-2xl col-span-2 sm:col-span-1">
+                        <span class="text-xs text-purple-600 font-bold uppercase block">Comprensión</span>
+                        <span id="resQuizScore" class="text-3xl font-extrabold font-title text-purple-700">100%</span>
+                        <span class="text-xs text-purple-500 block font-semibold">Preguntas correctas</span>
+                    </div>
+                </div>
+
+                <div id="feedbackBox" class="p-4 rounded-2xl text-left border-2 text-sm leading-relaxed">
+                    <!-- Feedback -->
+                </div>
+
+                <div class="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
+                    <button onclick="retryCurrentStory()" class="w-full sm:w-auto bg-slate-100 hover:bg-slate-200 text-slate-700 font-title font-bold px-6 py-3 rounded-2xl transition">
+                        <i class="fa-solid fa-rotate-left mr-2"></i> Repetir Lectura
+                    </button>
+                    <button onclick="showSection('welcome')" class="w-full sm:w-auto bg-kiddoOrange hover:bg-amber-500 text-white font-title font-bold px-8 py-3 rounded-2xl shadow-md transition transform hover:scale-105">
+                        <i class="fa-solid fa-house mr-2"></i> Elegir otro Cuento
+                    </button>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Modal Stats & Achievements -->
+    <div id="modalStats" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-md w-full p-6 space-y-5 relative shadow-2xl">
+            <button onclick="closeStatsModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 text-xl w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+            <div class="text-center space-y-1">
+                <div class="w-16 h-16 bg-purple-100 text-purple-600 text-3xl rounded-2xl flex items-center justify-center mx-auto mb-2">
+                    <i class="fa-solid fa-trophy"></i>
+                </div>
+                <h3 class="text-2xl font-bold font-title text-slate-800">Mi Progreso de Lectura</h3>
+                <p class="text-xs text-slate-500">Estadísticas para estudiantes de 2° Básico</p>
+            </div>
+
+            <div class="space-y-3">
+                <div class="flex justify-between items-center p-3 bg-slate-50 rounded-xl border border-slate-100">
+                    <span class="text-sm font-semibold text-slate-600"><i class="fa-solid fa-book text-sky-500 mr-2"></i> Lecturas completadas</span>
+                    <span id="statCompleted" class="font-title font-bold text-lg text-slate-800">0</span>
+                </div>
+                <div class="flex justify-between items-center p-3 bg-slate-50 rounded-xl border border-slate-100">
+                    <span class="text-sm font-semibold text-slate-600"><i class="fa-solid fa-bolt text-amber-500 mr-2"></i> Mejor Velocidad (PPM)</span>
+                    <span id="statMaxPPM" class="font-title font-bold text-lg text-amber-600">0 PPM</span>
+                </div>
+                <div class="flex justify-between items-center p-3 bg-slate-50 rounded-xl border border-slate-100">
+                    <span class="text-sm font-semibold text-slate-600"><i class="fa-solid fa-star text-yellow-500 mr-2"></i> Total Estrellas</span>
+                    <span id="statStars" class="font-title font-bold text-lg text-yellow-600">0</span>
+                </div>
+            </div>
+
+            <div class="border-t border-slate-100 pt-3">
+                <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Niveles de Fluidez (2° Básico)</h4>
+                <div class="space-y-1.5 text-xs">
+                    <div class="flex justify-between text-slate-600"><span>Requiere Apoyo:</span> <span class="font-bold text-red-500">&lt; 56 PPM</span></div>
+                    <div class="flex justify-between text-slate-600"><span>Medio / Casi adecuado:</span> <span class="font-bold text-amber-500">56 - 59 PPM</span></div>
+                    <div class="flex justify-between text-slate-600"><span>Adecuado:</span> <span class="font-bold text-emerald-600">60 - 84 PPM</span></div>
+                    <div class="flex justify-between text-slate-600"><span>Avanzado:</span> <span class="font-bold text-purple-600">&gt; 84 PPM</span></div>
+                </div>
+            </div>
+
+            <button onclick="closeStatsModal()" class="w-full bg-kiddoBlue text-white font-title font-bold py-3 rounded-xl shadow">
+                ¡Entendido!
+            </button>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-slate-200 py-4 text-center text-xs text-slate-500">
+        <p>Pilar de Lectura 2° Básico &bull; Plataforma Didáctica de Velocidad y Comprensión Lectora</p>
+        <p class="mt-1 font-semibold text-slate-600">Developed by: Cristian Romero R.</p>
+    </footer>
+
+    <!-- LOGIC JS -->
+    <script>
+        const STORIES_DATA = [
+            {
+                id: 'gato-milo',
+                title: 'El Gato Milo y la Pelota',
+                icon: '🐱',
+                difficulty: 'Fácil',
+                difficultyColor: 'bg-emerald-100 text-emerald-700',
+                text: "Milo es un gato pequeño de color naranja. A Milo le gusta mucho jugar en el jardín de la casa. Un día, Milo encontró una pelota roja debajo de una flor. El gato saltó de alegría y empujó la pelota con sus patas. La pelota rodó muy rápido por el pasto verde. Milo corrió detrás de ella sintiéndose muy feliz. Al final del día, Milo se acostó a dormir bajo el cálido sol.",
+                quiz: [
+                    { question: "¿De qué color es el gato Milo?", options: ["Blanco con negro", "Naranja", "Gris brillante"], answer: 1 },
+                    { question: "¿Qué juguete encontró Milo en el jardín?", options: ["Una pelota roja", "Un ratón de tela", "Un hueso grande"], answer: 0 },
+                    { question: "¿Dónde se acostó a dormir Milo al final del día?", options: ["En su cama de lana", "Debajo de la mesa", "Bajo el cálido sol"], answer: 2 }
+                ]
+            },
+            {
+                id: 'oso-miel',
+                title: 'El Oso que Buscaba Miel',
+                icon: '🐻',
+                difficulty: 'Fácil',
+                difficultyColor: 'bg-emerald-100 text-emerald-700',
+                text: "El oso Bernardo vive en un bosque lleno de árboles altos. Hoy el oso Bernardo tiene mucho hambre y quiere comer algo dulce. Sabe que las abejas preparan una miel muy deliciosa en la copa de los árboles. Bernardo camina despacio mirando hacia arriba. Encuentra un panal dorado en un roble grande. Con mucho cuidado, Bernardo prueba un poco de miel dulce y sonríe contento.",
+                quiz: [
+                    { question: "¿Cómo se llama el oso de la historia?", options: ["Bernardo", "Bruno", "Benjamín"], answer: 0 },
+                    { question: "¿Qué quería comer el oso Bernardo?", options: ["Manzanas rojas", "Peces del río", "Miel deliciosa"], answer: 2 },
+                    { question: "¿Dónde encontró el panal de miel?", options: ["En una cueva", "En un roble grande", "En la hierba"], answer: 1 }
+                ]
+            },
+            {
+                id: 'perrito-tobi',
+                title: 'El Perrito Tobi y la Lluvia',
+                icon: '🐶',
+                difficulty: 'Medio',
+                difficultyColor: 'bg-amber-100 text-amber-700',
+                text: "Tobi es un perrito muy juguetón que vive en el campo. A Tobi no le gusta cuando caen gotas de lluvia porque no puede salir a correr. Un martes por la mañana, el cielo se puso gris y comenzó a llover fuerte. Tobi miraba por la ventana con sus orejas caídas. De pronto, la lluvia paró y apareció un hermoso arcoíris de colores. Tobi salió corriendo a saltar sobre los charcos de agua limpia.",
+                quiz: [
+                    { question: "¿Dónde vive el perrito Tobi?", options: ["En la ciudad", "En el campo", "En la playa"], answer: 1 },
+                    { question: "¿Qué ocurrió después de que paró la lluvia?", options: ["Salió un hermoso arcoíris", "Se hizo de noche", "Nació una flor"], answer: 0 },
+                    { question: "¿Qué hizo Tobi al salir al jardín?", options: ["Se durmió una siesta", "Saltó sobre los charcos de agua", "Buscó una pelota"], answer: 1 }
+                ]
+            },
+            {
+                id: 'estrella-luna',
+                title: 'La Estrella Curiosa',
+                icon: '⭐',
+                difficulty: 'Medio',
+                difficultyColor: 'bg-amber-100 text-amber-700',
+                text: "En el cielo nocturno vivía una pequeña estrella llamada Estela. A Estela le encantaba mirar la Tierra desde las alturas. Se preguntaba cómo eran los árboles, las flores y los mares. Un día, la Luna le contó historias maravillosas sobre los niños que leían cuentos antes de dormir. Estela brilló con más fuerza que nunca para iluminar las noches de todos los niños del mundo entero.",
+                quiz: [
+                    { question: "¿Cómo se llamaba la pequeña estrella?", options: ["Estela", "Luna", "Sofía"], answer: 0 },
+                    { question: "¿Quién le contó historias maravillosas a la estrella?", options: ["El Sol", "El Viento", "La Luna"], answer: 2 },
+                    { question: "¿Por qué brilló con más fuerza la estrella?", options: ["Para asustar a las nubes", "Para iluminar las noches de los niños", "Para jugar con los aviones"], answer: 1 }
+                ]
+            },
+            {
+                id: 'barco-pirata',
+                title: 'El Barco del Pirata Pata',
+                icon: '🏴‍☠️',
+                difficulty: 'Avanzado',
+                difficultyColor: 'bg-purple-100 text-purple-700',
+                text: "El pirata Pata de Palo navega en un barco azul llamado El Rápido. No busca oro ni plata, sino libros de aventuras llenos de mapas misteriosos. Hoy llegó a una isla desierta con palmeras gigantes. Encontró un cofre de madera enterrado en la arena suave. Al abrirlo con emoción, descubrió un libro mágico que contaba historias sobre dragones voladores y castillos de cristal.",
+                quiz: [
+                    { question: "¿Cómo se llama el barco del pirata?", options: ["El Rápido", "El Fuerte", "El Maritimo"], answer: 0 },
+                    { question: "¿Qué busca realmente el pirata Pata de Palo?", options: ["Monedas de oro", "Libros de aventuras", "Joyas brillantes"], answer: 1 },
+                    { question: "¿Qué contenía el cofre de madera?", options: ["Un libro mágico", "Un mapa del tesoro", "Un catalejo de oro"], answer: 0 }
+                ]
+            },
+            {
+                id: 'robot-amigable',
+                title: 'El Robot que Sabía Pintar',
+                icon: '🤖',
+                difficulty: 'Avanzado',
+                difficultyColor: 'bg-purple-100 text-purple-700',
+                text: "Robi es un robot de metal brillante construido con tornillos y cables. A diferencia de otros robots, a Robi le encanta pintar cuadros coloridos. Usa pinceles finos y pinturas de tono azul, amarillo y verde. Hoy pintó un hermoso bosque con pajaritos cantando en los árboles. Todos en la ciudad admiran sus obras de arte y felicitan a Robi con aplausos alegres.",
+                quiz: [
+                    { question: "¿De qué está construido el robot Robi?", options: ["De plástico duro", "De tornillos y cables", "De madera pulida"], answer: 1 },
+                    { question: "¿Cuál es el talento especial de Robi?", options: ["Cantar canciones", "Pintar cuadros coloridos", "Construir casas"], answer: 1 },
+                    { question: "¿Qué pintó Robi en su cuadro de hoy?", options: ["Un coche de carreras", "Un bosque con pajaritos", "Un cohete espacial"], answer: 1 }
+                ]
+            },
+            {
+                id: 'conejita-copito',
+                title: 'La Conejita Copito de Nieve',
+                icon: '🐰',
+                difficulty: 'Fácil',
+                difficultyColor: 'bg-emerald-100 text-emerald-700',
+                text: "Copito es una conejita blanca como el algodón. Vive en una madriguera tibia cerca del río. A Copito le gusta comer zanahorias frescas y crujientes por las mañanas. Cuando sale el sol, le encanta saltar alto entre las margaritas. Hoy hizo una nueva amiga: una mariposa amarilla que volaba muy cerca de sus largas orejas. Las dos jugaron a las escondidas hasta que llegó la tarde.",
+                quiz: [
+                    { question: "¿Cómo es el pelaje de la conejita Copito?", options: ["Marrón como la tierra", "Blanco como el algodón", "Gris como la piedra"], answer: 1 },
+                    { question: "¿Qué le gusta comer a Copito por las mañanas?", options: ["Manzanas dulces", "Hojas secas", "Zanahorias frescas"], answer: 2 },
+                    { question: "¿Con quién jugó Copito a las escondidas?", options: ["Con una mariposa amarilla", "Con un pajarito azul", "Con una ardilla veloz"], answer: 0 }
+                ]
+            },
+            {
+                id: 'abeja-maya',
+                title: 'La Abejita Trabajadora',
+                icon: '🐝',
+                difficulty: 'Fácil',
+                difficultyColor: 'bg-emerald-100 text-emerald-700',
+                text: "Zuzu es una abejita muy organizada que vive en una colmena grande. Cada mañana, Zuzu despierta temprano con los primeros rayos del sol. Vuela de flor en flor juntando dulce néctar. A Zuzu le gustan especialmente las tulipanes rojos y los girasoles amarillos. Cuando su cesta está llena, regresa feliz a la colmena para preparar miel rica junto a sus hermanas.",
+                quiz: [
+                    { question: "¿Dónde vive la abejita Zuzu?", options: ["En una cueva", "En una colmena grande", "En un nido de paja"], answer: 1 },
+                    { question: "¿Qué junta Zuzu cuando vuela de flor en flor?", options: ["Agua pura", "Semillas pequeñas", "Dulce néctar"], answer: 2 },
+                    { question: "¿A qué lugar regresa Zuzu al llenar su cesta?", options: ["A la colmena", "A un tronco seco", "Al jardín del colegio"], answer: 0 }
+                ]
+            },
+            {
+                id: 'pajaro-azul',
+                title: 'El Canto del Pájaro Azul',
+                icon: '🐦',
+                difficulty: 'Fácil',
+                difficultyColor: 'bg-emerald-100 text-emerald-700',
+                text: "En la rama de un pino verde vive Pip, un pájaro de plumas azules. Pip tiene un canto melodioso que alegra a todos los animales del bosque. Cada mañana, Pip canta desde la cima de su árbol para avisar que el día ha comenzado. Las ardillas salen a buscar avellanas y los conejitos saludan moviendo sus colitas. El canto de Pip llena el bosque de alegría y buena energía.",
+                quiz: [
+                    { question: "¿De qué color son las plumas de Pip?", options: ["Rojas", "Azules", "Verdes"], answer: 1 },
+                    { question: "¿En qué árbol vive el pájaro Pip?", options: ["En un pino verde", "En una palmera", "En un manzano"], answer: 0 },
+                    { question: "¿Para qué canta Pip cada mañana?", options: ["Para pedir comida", "Para avisar que comenzó el día", "Para llamar a la lluvia"], answer: 1 }
+                ]
+            },
+            {
+                id: 'delfin-flipper',
+                title: 'El Delfín Curioso',
+                icon: '🐬',
+                difficulty: 'Medio',
+                difficultyColor: 'bg-amber-100 text-amber-700',
+                text: "Tito es un joven delfín que nada en el océano azul. Le encanta dar piruetas en el aire y hacer burbujas bajo el agua. Hoy Tito exploró un arrecife de coral lleno de peces multicolores. Vio peces payaso naranjas y estrellas de mar de color violeta. Tito saludó a una simpática tortuga marina y nadaron juntos haciendo carreras cerca de las olas.",
+                quiz: [
+                    { question: "¿Qué animal es Tito?", options: ["Un tiburón", "Un delfín", "Un pulpo"], answer: 1 },
+                    { question: "¿Qué lugares exploró Tito hoy?", options: ["Un barco hundido", "Un arrecife de coral", "Una cueva de hielo"], answer: 1 },
+                    { question: "¿Con quién hizo carreras Tito cerca de las olas?", options: ["Con una tortuga marina", "Con un pez espada", "Con una ballena azul"], answer: 0 }
+                ]
+            },
+            {
+                id: 'ardilla-castana',
+                title: 'La Ardilla Pilla',
+                icon: '🐿️',
+                difficulty: 'Medio',
+                difficultyColor: 'bg-amber-100 text-amber-700',
+                text: "Nuca es una ardilla de cola esponjosa y muy veloz. Durante el otoño, Nuca junta castañas y nueces para guardarlas antes del invierno. Esconde sus tesoros en el hueco de un árbol viejo. A veces olvida dónde guardó algunas nueces y en esos lugares nacen nuevos arbolitos. Nuca trabaja duro todo el día, pero siempre guarda tiempo para jugar con las hojas secas.",
+                quiz: [
+                    { question: "¿Qué junta la ardilla Nuca durante el otoño?", options: ["Castañas y nueces", "Manzanas y uvas", "Piedras y hojas"], answer: 0 },
+                    { question: "¿Dónde guarda sus alimentos?", options: ["Bajo la tierra", "En el hueco de un árbol viejo", "En un nido de paja"], answer: 1 },
+                    { question: "¿Qué nace en los lugares donde Nuca olvida sus nueces?", options: ["Flores silvestres", "Nuevos arbolitos", "Hongos grandes"], answer: 1 }
+                ]
+            },
+            {
+                id: 'semilla-magica',
+                title: 'La Pequeña Semilla',
+                icon: '🌱',
+                difficulty: 'Medio',
+                difficultyColor: 'bg-amber-100 text-amber-700',
+                text: "Una pequeña semilla dormía plácidamente bajo la tierra negra. Un día cálido, la lluvia suave mojó la tierra y el sol brillante le dio calor. La semillita despertó de su largo sueño y estiró sus tallos hacia arriba. Rompió la tierra y sacó dos hojitas verdes muy tiernas. Con el tiempo y los cuidados del agua, la semillita se convirtió en un hermoso girasol alto.",
+                quiz: [
+                    { question: "¿Dónde dormía la pequeña semilla al principio?", options: ["En una maceta", "Bajo la tierra negra", "En el fondo del río"], answer: 1 },
+                    { question: "¿Qué ayudó a la semilla a despertar?", options: ["El viento frío", "La lluvia suave y el sol", "La nieve del invierno"], answer: 1 },
+                    { question: "¿En qué planta se convirtió la semillita?", options: ["En un rosal redondito", "En un árbol de limones", "En un hermoso girasol"], answer: 2 }
+                ]
+            },
+            {
+                id: 'tren-chuchu',
+                title: 'El Tren de los Colores',
+                icon: '🚂',
+                difficulty: 'Medio',
+                difficultyColor: 'bg-amber-100 text-amber-700',
+                text: "El tren Chuchú recorre los valles del campo llevando juguetes y alegría. Tiene cuatro vagones pintados de rojo, verde, azul y amarillo. El conductor del tren es el señor Búho, quien lleva un sombrero negro elegante. En cada estación, los animales suben felices para viajar hacia la gran fiesta de la primavera. ¡El tren pita con entusiasmo anunciando su llegada!",
+                quiz: [
+                    { question: "¿De qué colores son los vagones del tren?", options: ["Rojo, verde, azul y amarillo", "Blanco, negro y gris", "Rosa y violeta"], answer: 0 },
+                    { question: "¿Quién es el conductor del tren Chuchú?", options: ["El señor Oso", "El señor Búho", "El zorro Pedro"], answer: 1 },
+                    { question: "¿Hacia dónde viajan los animales?", options: ["Hacia la playa", "Hacia la gran fiesta de primavera", "Hacia la montaña alta"], answer: 1 }
+                ]
+            },
+            {
+                id: 'duende-chispita',
+                title: 'El Duende de los Zapatos',
+                icon: '🧙‍♂️',
+                difficulty: 'Medio',
+                difficultyColor: 'bg-amber-100 text-amber-700',
+                text: "Chispita es un duendecillo que vive detrás del taller del zapatero. Le encanta reparar calzados por las noches cuando todos duermen. Usa hilos de colores luminosos y pequeñas agujas de plata. Al despertar, el zapatero encuentra botas brillantes y zapatos limpios listos para vender. En agradecimiento, el zapatero le deja un plato de galletas y un vaso de leche dulce cada noche.",
+                quiz: [
+                    { question: "¿A qué se dedica el duendecillo Chispita?", options: ["A reparar zapatos por las noches", "A fabricar juguetes de madera", "A cultivar flores mágicas"], answer: 0 },
+                    { question: "¿Qué materiales usa Chispita para coser?", options: ["Lana de oveja", "Hilos de colores y agujas de plata", "Cintas de seda roja"], answer: 1 },
+                    { question: "¿Qué regalo le deja el zapatero a Chispita?", options: ["Un sombrero nuevo", "Galletas y leche dulce", "Monedas de bronce"], answer: 1 }
+                ]
+            },
+            {
+                id: 'cohete-espacial',
+                title: 'El Viaje del Cohete Rayo',
+                icon: '🚀',
+                difficulty: 'Avanzado',
+                difficultyColor: 'bg-purple-100 text-purple-700',
+                text: "El cohete Rayo despegó hacia el espacio desde la base espacial. Llevaba a bordo a la capitana Valentina y a su perro robot llamado Chispas. Juntos viajaron cerca de la Luna para tomar fotografías de sus cráteres de polvo. Miraron la Tierra desde lejos y vieron los continentes verdes y los océanos azules. Valentina saludó por la radio y prometió volver con historias sorprendentes.",
+                quiz: [
+                    { question: "¿Quién viaja a bordo del cohete Rayo?", options: ["La capitana Valentina y su perro robot", "Tres astrónomos experimentados", "Un niño con su gato"], answer: 0 },
+                    { question: "¿A qué lugar viajaron cerca para tomar fotos?", options: ["Al planeta Marte", "Cerca de la Luna", "Al Sol brillante"], answer: 1 },
+                    { question: "¿Cómo se veía la Tierra desde el espacio?", options: ["Completamente blanca", "Verde y con océanos azules", "Roja y desértica"], answer: 1 }
+                ]
+            },
+            {
+                id: 'dragón-amigable',
+                title: 'El Dragón que Soplaba Burbujas',
+                icon: '🐉',
+                difficulty: 'Avanzado',
+                difficultyColor: 'bg-purple-100 text-purple-700',
+                text: "En una montaña lejana vivía un dragón verde llamado Fuego. A diferencia de otros dragones, Fuego no estornudaba chispas calientes sino brillantes burbujas de jabón. A los niños del pueblo cercano les gustaba subir la colina para jugar a reventar las burbujas flotantes. Fuego se sentía muy feliz haciendo sonreír a sus amigos mientras el viento paseaba sus burbujas de colores.",
+                quiz: [
+                    { question: "¿Qué salía de la boca del dragón Fuego?", options: ["Humo negro", "Brillantes burbujas de jabón", "Llamas rojas"], answer: 1 },
+                    { question: "¿De qué color es el dragón Fuego?", options: ["Rojo intenso", "Verde", "Azul oscuro"], answer: 1 },
+                    { question: "¿Por qué subían los niños a la colina?", options: ["Para jugar a reventar burbujas", "Para buscar tesoros", "Para ver el atardecer"], answer: 0 }
+                ]
+            },
+            {
+                id: 'faro-marino',
+                title: 'El Faro de la Isla Azul',
+                icon: '🏮',
+                difficulty: 'Avanzado',
+                difficultyColor: 'bg-purple-100 text-purple-700',
+                text: "En lo alto de una roca junto al mar se levanta un faro alto y de franjas rojas. Su luz brillante gira durante toda la noche para guiar a los barcos de los pescadores. Don Mateo es el encargado de limpiar sus vidrios para que la luz sea siempre clara y potente. Cuando la niebla cubre la costa, el faro hace sonar una campana suave que protege a todos los marineros.",
+                quiz: [
+                    { question: "¿De qué colores son las franjas del faro?", options: ["Rojas y blancas", "Azules y amarillas", "Verdes y negras"], answer: 0 },
+                    { question: "¿Cuál es el trabajo de Don Mateo?", options: ["Pescador de peces", "Limpiar los vidrios del faro", "Construir barcos"], answer: 1 },
+                    { question: "¿Qué hace el faro cuando hay mucha niebla?", options: ["Lanza cohetes luminosos", "Hace sonar una campana suave", "Apaga su luz brillante"], answer: 1 }
+                ]
+            },
+            {
+                id: 'pingüino-pipo',
+                title: 'El Pingüino Patinador',
+                icon: '🐧',
+                difficulty: 'Avanzado',
+                difficultyColor: 'bg-purple-100 text-purple-700',
+                text: "Pipo es un pingüino que vive en el continente helado de la Antártida. Le encanta deslizarse sobre la nieve fresca usando su guatita como si fuera un trineo. Hoy Pipo organizó una competencia de patinaje sobre hielo con sus amigos. Todos dieron giros elegantes y saltos divertidos. Al terminar el evento, compartieron un sabroso plato de pececitos frescos en la orilla.",
+                quiz: [
+                    { question: "¿Dónde vive el pingüino Pipo?", options: ["En la selva tropical", "En la Antártida helada", "En una isla desierta"], answer: 1 },
+                    { question: "¿Cómo se desliza Pipo sobre la nieve?", options: ["Usando esquís", "Sobre su guatita como trineo", "En un patinete"], answer: 1 },
+                    { question: "¿Qué comieron al finalizar la competencia de patinaje?", options: ["Pececitos frescos", "Galletas de avena", "Helados de fruta"], answer: 0 }
+                ]
+            },
+            {
+                id: 'castillo-arena',
+                title: 'El Castillo de la Playa',
+                icon: '🏰',
+                difficulty: 'Avanzado',
+                difficultyColor: 'bg-purple-100 text-purple-700',
+                text: "Mateo y Sofía fueron a la playa un sábado lleno de sol brillante. Usaron baldes, palas y moldes de plástico para construir un enorme castillo de arena. Le hicieron torres altas, un foso alrededor y una bandera hecha con una hojita. Cuando la marea comenzó a subir, le tomaron una foto para recordarlo siempre antes de regresar contentos a casa.",
+                quiz: [
+                    { question: "¿Qué herramientas usaron Mateo y Sofía?", options: ["Baldes, palas y moldes", "Pinceles y acuarelas", "Martillos y clavos"], answer: 0 },
+                    { question: "¿De qué estaba hecha la bandera del castillo?", options: ["De tela roja", "De una hojita", "De papel brillante"], answer: 1 },
+                    { question: "¿Qué hicieron antes de que subiera la marea?", options: ["Le tomaron una foto", "Lo cubrieron con plástico", "Se llevaron la arena"], answer: 0 }
+                ]
+            },
+            {
+                id: 'circo-magico',
+                title: 'El Gran Circo de Alegría',
+                icon: '🎪',
+                difficulty: 'Avanzado',
+                difficultyColor: 'bg-purple-100 text-purple-700',
+                text: "Hoy llegó a la ciudad una gran carpa de colores brillantes. En el circo actuaban malabaristas que lanzaban aros luminosos y trapecistas que volaban por el aire. El payaso Tallarín sacaba pañuelos infinitos de su bolsillo haciendo reír a todos los niños. Al finalizar el espectáculo, la música sonó con fuerza y todo el público aplaudió de pie con mucha emoción.",
+                quiz: [
+                    { question: "¿Qué lanzaban los malabaristas?", options: ["Pelotas de tenis", "Aros luminosos", "Antorchas de fuego"], answer: 1 },
+                    { question: "¿Cómo se llamaba el divertido payaso?", options: ["Tallarín", "Copita", "Chispita"], answer: 0 },
+                    { question: "¿Cómo reaccionó el público al terminar el circo?", options: ["Se fue en silencio", "Aplaudió de pie con emoción", "Cantó una canción triste"], answer: 1 }
+                ]
+            }
+        ];
+
+        /* ESTADO DE LA APLICACIÓN */
+        let currentStory = null;
+        let wordsArray = [];
+        let cleanedWordsArray = [];
+        let selectedLastWordIndex = -1;
+        let timerInterval = null;
+        let timeRemaining = 60;
+        let isTimerRunning = false;
+        let speechSynthUtterance = null;
+        let audioSpeed = 1.0;
+
+        /* RECONOCIMIENTO DE VOZ DE ALTA SINCRONÍA */
+        let recognition = null;
+        let isListening = false;
+
+        let userStats = {
+            stars: 0,
+            completedCount: 0,
+            maxPPM: 0
+        };
+
+        window.addEventListener('DOMContentLoaded', () => {
+            loadStatsFromStorage();
+            renderStoryCards();
+            updateStatsUI();
+            initSpeechRecognition();
+        });
+
+        function loadStatsFromStorage() {
+            const saved = localStorage.getItem('pilar_lectura_stats');
+            if (saved) {
+                try { userStats = JSON.parse(saved); } catch(e){}
+            }
+        }
+
+        function saveStatsToStorage() {
+            localStorage.setItem('pilar_lectura_stats', JSON.stringify(userStats));
+            updateStatsUI();
+        }
+
+        function updateStatsUI() {
+            document.getElementById('headerStars').textContent = userStats.stars;
+            document.getElementById('statStars').textContent = userStats.stars;
+            document.getElementById('statCompleted').textContent = userStats.completedCount;
+            document.getElementById('statMaxPPM').textContent = userStats.maxPPM + ' PPM';
+        }
+
+        function renderStoryCards() {
+            const container = document.getElementById('storiesCardsContainer');
+            container.innerHTML = '';
+
+            STORIES_DATA.forEach(story => {
+                const totalWords = story.text.split(/\s+/).length;
+                const cardHtml = `
+                    <div onclick="selectStory('${story.id}')" class="bg-white rounded-3xl border-2 border-slate-200 hover:border-kiddoBlue p-5 shadow-sm hover:shadow-xl transition transform hover:-translate-y-1 cursor-pointer flex flex-col justify-between group">
+                        <div>
+                            <div class="flex items-center justify-between mb-3">
+                                <span class="text-4xl p-2 bg-slate-50 rounded-2xl group-hover:scale-110 transition">${story.icon}</span>
+                                <span class="text-xs font-bold px-3 py-1 rounded-full ${story.difficultyColor}">${story.difficulty}</span>
+                            </div>
+                            <h4 class="text-xl font-bold font-title text-slate-800 group-hover:text-kiddoBlue transition mb-1">${story.title}</h4>
+                            <p class="text-xs text-slate-500 line-clamp-2">${story.text}</p>
+                        </div>
+                        <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs font-semibold text-slate-400">
+                            <span><i class="fa-solid fa-font mr-1 text-slate-400"></i> ${totalWords} palabras</span>
+                            <span class="text-kiddoOrange font-bold group-hover:translate-x-1 transition flex items-center">Leer <i class="fa-solid fa-chevron-right ml-1"></i></span>
+                        </div>
+                    </div>
+                `;
+                container.innerHTML += cardHtml;
+            });
+
+            document.getElementById('storyCountLabel').textContent = `${STORIES_DATA.length} Lecturas disponibles`;
+        }
+
+        /* MOTOR MEJORADO DE RECONOCIMIENTO Y SINCRONIZACIÓN LECTORA */
+        function initSpeechRecognition() {
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            if (!SpeechRecognition) {
+                console.warn("Reconocimiento de voz no soportado.");
+                return;
+            }
+
+            recognition = new SpeechRecognition();
+            recognition.continuous = true;
+            recognition.interimResults = true; // Activa procesamiento de resultados parciales instantáneos
+            recognition.maxAlternatives = 1;
+            recognition.lang = 'es-ES';
+
+            recognition.onresult = (event) => {
+                let currentChunk = '';
+                // Analiza desde el último fragmento capturado por la API
+                for (let i = event.resultIndex; i < event.results.length; ++i) {
+                    currentChunk += event.results[i][0].transcript + ' ';
+                }
+                if (currentChunk.trim().length > 0) {
+                    processSpokenChunk(currentChunk);
+                }
+            };
+
+            recognition.onerror = (event) => {
+                if (event.error === 'not-allowed') {
+                    alertModal("Permiso de micrófono denegado. Puedes usar la selección manual haciendo clic en el texto.");
+                    stopSpeechRecognition();
+                }
+            };
+
+            recognition.onend = () => {
+                if (isListening) {
+                    try { recognition.start(); } catch(e){}
+                }
+            };
+        }
+
+        function toggleSpeechRecognition() {
+            if (!recognition) {
+                alertModal("El reconocimiento de voz no está soportado en tu navegador. Puedes usar la lectura manual haciendo clic en la pantalla.");
+                return;
+            }
+
+            if (isListening) {
+                stopSpeechRecognition();
+            } else {
+                startSpeechRecognition();
+            }
+        }
+
+        function startSpeechRecognition() {
+            if (!recognition) return;
+            try {
+                recognition.start();
+                isListening = true;
+                
+                if (!isTimerRunning) {
+                    startTimer();
+                }
+
+                const btn = document.getElementById('btnToggleMic');
+                const text = document.getElementById('micStatusText');
+                btn.className = "bg-red-500 hover:bg-red-600 text-white font-bold px-4 py-3 rounded-2xl text-sm flex items-center gap-2 transition shadow-md animate-pulse";
+                text.textContent = "Escuchando...";
+
+                document.getElementById('micInfoBanner').innerHTML = `
+                    <div class="flex items-center space-x-2 text-emerald-800">
+                        <i class="fa-solid fa-microphone text-emerald-600 text-base animate-bounce"></i>
+                        <span><strong>¡Sincronización ultrasensible activa!</strong> Lee fluidamente. Las palabras se avanzarán automáticamente al ritmo de tu voz.</span>
+                    </div>
+                `;
+            } catch (err) {
+                console.error("Error al iniciar micrófono:", err);
+            }
+        }
+
+        function stopSpeechRecognition() {
+            isListening = false;
+            if (recognition) {
+                try { recognition.stop(); } catch(e){}
+            }
+
+            const btn = document.getElementById('btnToggleMic');
+            const text = document.getElementById('micStatusText');
+            if (btn && text) {
+                btn.className = "bg-rose-100 hover:bg-rose-200 text-rose-700 border-2 border-rose-300 font-bold px-4 py-3 rounded-2xl text-sm flex items-center gap-2 transition shadow-sm";
+                text.textContent = "Activar Micrófono";
+            }
+        }
+
+        function cleanWord(str) {
+            if (!str) return '';
+            return str
+                .toLowerCase()
+                .normalize("NFD")
+                .replace(/[\u0300-\u036f]/g, "")
+                .replace(/[^a-z0-9ñ]/g, "")
+                .trim();
+        }
+
+        /* PROCESAMIENTO ULTRARRÁPIDO Y VENTANA DESLIZANTE DE SINCRONÍA */
+        function processSpokenChunk(spokenChunkText) {
+            if (!cleanedWordsArray || cleanedWordsArray.length === 0) return;
+
+            const spokenTokens = spokenChunkText.split(/\s+/).map(cleanWord).filter(w => w.length > 0);
+            if (spokenTokens.length === 0) return;
+
+            // Busca coincidencia en las palabras recién habladas
+            spokenTokens.forEach(spokenWord => {
+                if (spokenWord.length === 0) return;
+
+                const startSearch = Math.max(0, selectedLastWordIndex);
+                // Escanea un horizonte próximo de hasta 8 palabras adelante
+                const endSearch = Math.min(cleanedWordsArray.length, startSearch + 8);
+
+                for (let i = startSearch; i < endSearch; i++) {
+                    const targetWord = cleanedWordsArray[i];
+                    if (!targetWord) continue;
+
+                    // Coincidencia rápida
+                    const isExact = (targetWord === spokenWord);
+                    const isPrefix = (spokenWord.length >= 3 && targetWord.length >= 3 && (targetWord.startsWith(spokenWord) || spokenWord.startsWith(targetWord)));
+                    const isFuzzy = targetWord.length > 3 && fuzzyMatch(targetWord, spokenWord);
+
+                    if (isExact || isPrefix || isFuzzy) {
+                        if (i > selectedLastWordIndex) {
+                            selectedLastWordIndex = i;
+                            updateWordStyles();
+                            updateLivePPM();
+                            autoScrollToWord(i);
+                        }
+                        break;
+                    }
+                }
+            });
+        }
+
+        function fuzzyMatch(str1, str2) {
+            if (Math.abs(str1.length - str2.length) > 2) return false;
+            let commonChars = 0;
+            const minLen = Math.min(str1.length, str2.length);
+            for (let i = 0; i < minLen; i++) {
+                if (str1[i] === str2[i]) commonChars++;
+            }
+            return (commonChars / minLen) >= 0.7;
+        }
+
+        function autoScrollToWord(index) {
+            const wordEl = document.getElementById(`word-${index}`);
+            if (wordEl) {
+                wordEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }
+        }
+
+        /* SECCIONES Y VISTAS */
+        function showSection(sectionId) {
+            stopSpeech();
+            stopSpeechRecognition();
+            resetTimer();
+
+            document.getElementById('sec-welcome').classList.add('hidden');
+            document.getElementById('sec-reading').classList.add('hidden');
+            document.getElementById('sec-quiz').classList.add('hidden');
+            document.getElementById('sec-results').classList.add('hidden');
+
+            if (sectionId === 'welcome') {
+                document.getElementById('sec-welcome').classList.remove('hidden');
+            } else if (sectionId === 'reading') {
+                document.getElementById('sec-reading').classList.remove('hidden');
+            } else if (sectionId === 'quiz') {
+                document.getElementById('sec-quiz').classList.remove('hidden');
+            } else if (sectionId === 'results') {
+                document.getElementById('sec-results').classList.remove('hidden');
+            }
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function selectStory(storyId) {
+            currentStory = STORIES_DATA.find(s => s.id === storyId);
+            if (!currentStory) return;
+
+            document.getElementById('storyTitle').textContent = currentStory.title;
+            document.getElementById('storyIcon').textContent = currentStory.icon;
+            document.getElementById('storyDifficulty').textContent = currentStory.difficulty;
+
+            wordsArray = currentStory.text.trim().split(/\s+/);
+            cleanedWordsArray = wordsArray.map(cleanWord);
+            document.getElementById('storyTotalWords').textContent = wordsArray.length;
+
+            renderInteractiveText();
+            resetReadingState();
+            showSection('reading');
+        }
+
+        function renderInteractiveText() {
+            const container = document.getElementById('storyContainer');
+            container.innerHTML = '';
+
+            wordsArray.forEach((word, index) => {
+                const wordSpan = document.createElement('span');
+                wordSpan.className = 'word-bubble';
+                wordSpan.id = `word-${index}`;
+                wordSpan.textContent = word;
+                wordSpan.onclick = () => handleWordClick(index);
+                container.appendChild(wordSpan);
+            });
+        }
+
+        function handleWordClick(index) {
+            selectedLastWordIndex = index;
+            updateWordStyles();
+            updateLivePPM();
+            playSoftClickSound();
+        }
+
+        function updateWordStyles() {
+            wordsArray.forEach((_, idx) => {
+                const el = document.getElementById(`word-${idx}`);
+                if (!el) return;
+
+                el.classList.remove('read', 'active');
+                if (idx < selectedLastWordIndex) {
+                    el.classList.add('read');
+                } else if (idx === selectedLastWordIndex) {
+                    el.classList.add('active');
+                }
+            });
+
+            const count = selectedLastWordIndex >= 0 ? selectedLastWordIndex + 1 : 0;
+            document.getElementById('readWordsCount').textContent = count;
+        }
+
+        function resetReadingState() {
+            selectedLastWordIndex = -1;
+            updateWordStyles();
+            resetTimer();
+            document.getElementById('livePPM').innerHTML = `0 <span class="text-xs">PPM</span>`;
+        }
+
+        /* TEMPORIZADOR Y CÁLCULOS */
+        function toggleTimer() {
+            if (isTimerRunning) {
+                pauseTimer();
+            } else {
+                startTimer();
+            }
+        }
+
+        function startTimer() {
+            if (isTimerRunning) return;
+            isTimerRunning = true;
+
+            const btn = document.getElementById('btnStartTimer');
+            btn.innerHTML = `<i class="fa-solid fa-pause mr-1"></i> Pausa`;
+            btn.className = "bg-amber-400 hover:bg-amber-500 text-slate-900 font-title font-bold px-4 py-2 rounded-xl text-base shadow transition";
+
+            timerInterval = setInterval(() => {
+                timeRemaining--;
+                updateTimerDisplay();
+
+                if (timeRemaining <= 0) {
+                    pauseTimer();
+                    playTimerEndSound();
+                    alertModal("¡Tiempo agotado! Has completado tus 60 segundos.");
+                }
+            }, 1000);
+        }
+
+        function pauseTimer() {
+            isTimerRunning = false;
+            clearInterval(timerInterval);
+            const btn = document.getElementById('btnStartTimer');
+            btn.innerHTML = `<i class="fa-solid fa-play mr-1"></i> Reanudar`;
+            btn.className = "bg-kiddoGreen hover:bg-emerald-400 text-slate-900 font-title font-bold px-4 py-2 rounded-xl text-base shadow transition";
+        }
+
+        function resetTimer() {
+            pauseTimer();
+            timeRemaining = 60;
+            updateTimerDisplay();
+            const btn = document.getElementById('btnStartTimer');
+            btn.innerHTML = `<i class="fa-solid fa-play mr-1"></i> Iniciar`;
+            btn.className = "bg-kiddoGreen hover:bg-emerald-400 text-slate-900 font-title font-bold px-4 py-2 rounded-xl text-base shadow transition";
+        }
+
+        function updateTimerDisplay() {
+            const mins = Math.floor(timeRemaining / 60);
+            const secs = timeRemaining % 60;
+            document.getElementById('timerDisplay').textContent = 
+                `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+        }
+
+        function updateLivePPM() {
+            const wordsRead = selectedLastWordIndex >= 0 ? selectedLastWordIndex + 1 : 0;
+            const timeElapsed = 60 - timeRemaining;
+            
+            let ppm = 0;
+            if (timeElapsed > 0) {
+                ppm = Math.round((wordsRead / (timeElapsed / 60)));
+            } else {
+                ppm = wordsRead;
+            }
+
+            document.getElementById('livePPM').innerHTML = `${ppm} <span class="text-xs">PPM</span>`;
+        }
+
+        /* LECTOR AUTOMÁTICO DE GUÍA POR VOZ */
+        function toggleReadAloud() {
+            if ('speechSynthesis' in window) {
+                if (window.speechSynthesis.speaking) {
+                    stopSpeech();
+                } else {
+                    startSpeech();
+                }
+            } else {
+                alertModal("Tu navegador no soporta la lectura por voz.");
+            }
+        }
+
+        function startSpeech() {
+            if (!currentStory) return;
+            stopSpeech();
+
+            speechSynthUtterance = new SpeechSynthesisUtterance(currentStory.text);
+            speechSynthUtterance.lang = 'es-ES';
+            speechSynthUtterance.rate = audioSpeed;
+
+            const btn = document.getElementById('btnReadAloud');
+            btn.innerHTML = `<i class="fa-solid fa-stop text-red-500 mr-1"></i> Detener Audio`;
+            btn.className = "bg-red-100 hover:bg-red-200 text-red-800 font-bold px-3 py-2 rounded-xl text-xs sm:text-sm flex items-center gap-2 transition";
+
+            // Sincronización en tiempo real durante la lectura de guía
+            speechSynthUtterance.onboundary = (event) => {
+                if (event.name === 'word') {
+                    const charIndex = event.charIndex;
+                    let accumulatedLength = 0;
+                    for (let i = 0; i < wordsArray.length; i++) {
+                        accumulatedLength += wordsArray[i].length + 1;
+                        if (accumulatedLength > charIndex) {
+                            selectedLastWordIndex = i;
+                            updateWordStyles();
+                            autoScrollToWord(i);
+                            break;
+                        }
+                    }
+                }
+            };
+
+            speechSynthUtterance.onend = () => {
+                resetSpeechBtn();
+            };
+
+            window.speechSynthesis.speak(speechSynthUtterance);
+        }
+
+        function stopSpeech() {
+            if ('speechSynthesis' in window && window.speechSynthesis.speaking) {
+                window.speechSynthesis.cancel();
+            }
+            resetSpeechBtn();
+        }
+
+        function resetSpeechBtn() {
+            const btn = document.getElementById('btnReadAloud');
+            if (btn) {
+                btn.innerHTML = `<i class="fa-solid fa-volume-high text-sky-600 mr-1"></i> Escuchar Cuento`;
+                btn.className = "bg-sky-100 hover:bg-sky-200 text-sky-800 font-bold px-3 py-2 rounded-xl text-xs sm:text-sm flex items-center gap-2 transition";
+            }
+        }
+
+        function changeGuideSpeed() {
+            if (audioSpeed === 1.0) {
+                audioSpeed = 0.75;
+                document.getElementById('speedLabel').textContent = "Lento";
+            } else if (audioSpeed === 0.75) {
+                audioSpeed = 1.25;
+                document.getElementById('speedLabel').textContent = "Rápido";
+            } else {
+                audioSpeed = 1.0;
+                document.getElementById('speedLabel').textContent = "Normal";
+            }
+        }
+
+        /* COMPRENSIÓN LECTORA Y EVALUACIÓN */
+        function finishReadingSession() {
+            if (selectedLastWordIndex < 0) {
+                alertModal("Por favor, activa el micrófono y lee en voz alta, o marca con un clic la última palabra que leíste.");
+                return;
+            }
+
+            pauseTimer();
+            stopSpeech();
+            stopSpeechRecognition();
+            renderQuiz();
+            showSection('quiz');
+        }
+
+        function renderQuiz() {
+            const container = document.getElementById('quizQuestionsContainer');
+            container.innerHTML = '';
+
+            currentStory.quiz.forEach((q, qIndex) => {
+                let optionsHtml = '';
+                q.options.forEach((opt, optIndex) => {
+                    optionsHtml += `
+                        <label class="flex items-center p-3 rounded-xl border-2 border-slate-200 hover:border-kiddoBlue bg-white cursor-pointer transition">
+                            <input type="radio" name="question-${qIndex}" value="${optIndex}" class="w-5 h-5 text-kiddoBlue focus:ring-kiddoBlue border-slate-300">
+                            <span class="ml-3 text-slate-700 font-semibold text-sm sm:text-base">${opt}</span>
+                        </label>
+                    `;
+                });
+
+                const qCard = `
+                    <div class="bg-slate-50 p-5 rounded-2xl border border-slate-200 space-y-3">
+                        <h4 class="font-bold text-slate-800 text-base sm:text-lg flex items-center gap-2">
+                            <span class="bg-kiddoBlue text-white w-7 h-7 rounded-full inline-flex items-center justify-center text-xs font-title">${qIndex + 1}</span>
+                            ${q.question}
+                        </h4>
+                        <div class="space-y-2">
+                            ${optionsHtml}
+                        </div>
+                    </div>
+                `;
+                container.innerHTML += qCard;
+            });
+        }
+
+        function evaluateQuiz() {
+            let correctCount = 0;
+            const totalQuestions = currentStory.quiz.length;
+
+            for (let i = 0; i < totalQuestions; i++) {
+                const selected = document.querySelector(`input[name="question-${i}"]:checked`);
+                if (!selected) {
+                    alertModal(`Por favor responde la pregunta #${i + 1}.`);
+                    return;
+                }
+                if (parseInt(selected.value) === currentStory.quiz[i].answer) {
+                    correctCount++;
+                }
+            }
+
+            showResults(correctCount, totalQuestions);
+        }
+
+        function showResults(quizCorrect, totalQuiz) {
+            const wordsRead = selectedLastWordIndex + 1;
+            const timeElapsed = 60 - timeRemaining;
+            
+            let ppm = 0;
+            if (timeElapsed > 0 && timeElapsed < 60) {
+                ppm = Math.round((wordsRead / timeElapsed) * 60);
+            } else {
+                ppm = wordsRead;
+            }
+
+            const quizPercentage = Math.round((quizCorrect / totalQuiz) * 100);
+
+            let levelText = "";
+            let levelBadgeColor = "";
+            let feedbackText = "";
+
+            if (ppm < 56) {
+                levelText = "Requiere Apoyo";
+                levelBadgeColor = "text-amber-600";
+                feedbackText = `<strong>¡Sigue practicando!</strong> En 2° Básico la meta es superar las 60 palabras por minuto. Con más práctica diaria lo lograrás muy pronto. ¡No te rindas!`;
+            } else if (ppm >= 56 && ppm <= 59) {
+                levelText = "Casi Adecuado";
+                levelBadgeColor = "text-amber-500";
+                feedbackText = `<strong>¡Muy bien!</strong> Estás muy cerca del nivel adecuado (60 PPM). Un pequeño esfuerzo más y lo conseguirás.`;
+            } else if (ppm >= 60 && ppm <= 84) {
+                levelText = "¡Adecuado!";
+                levelBadgeColor = "text-emerald-600";
+                feedbackText = `<strong>¡Excelente ritmo de lectura!</strong> Te encuentras dentro del nivel esperado para 2° Básico (60-84 PPM). ¡Tu lectura es fluida y veloz!`;
+            } else {
+                levelText = "¡Avanzado!";
+                levelBadgeColor = "text-purple-600";
+                feedbackText = `<strong>¡Increíble superlector!</strong> Tu velocidad supera las 84 palabras por minuto. Tienes una excelente fluidez lectora.`;
+            }
+
+            document.getElementById('resPPM').textContent = ppm;
+            document.getElementById('resLevel').textContent = levelText;
+            document.getElementById('resLevel').className = `text-xl font-extrabold font-title ${levelBadgeColor} mt-1 block`;
+            document.getElementById('resQuizScore').textContent = `${quizPercentage}%`;
+
+            const feedbackBox = document.getElementById('feedbackBox');
+            feedbackBox.className = "p-4 rounded-2xl text-left border-2 text-sm leading-relaxed bg-blue-50 border-blue-200 text-blue-900";
+            feedbackBox.innerHTML = `${feedbackText} <br/><br/><strong>Comprensión:</strong> Respondiste correctamente ${quizCorrect} de ${totalQuiz} preguntas.`;
+
+            let starsEarned = 1;
+            if (ppm >= 60) starsEarned += 1;
+            if (quizPercentage === 100) starsEarned += 1;
+
+            userStats.stars += starsEarned;
+            userStats.completedCount += 1;
+            if (ppm > userStats.maxPPM) {
+                userStats.maxPPM = ppm;
+            }
+
+            saveStatsToStorage();
+            showSection('results');
+
+            if (typeof confetti === 'function') {
+                confetti({
+                    particleCount: 80,
+                    spread: 70,
+                    origin: { y: 0.6 }
+                });
+            }
+        }
+
+        function retryCurrentStory() {
+            if (currentStory) {
+                selectStory(currentStory.id);
+            }
+        }
+
+        function showStatsModal() {
+            document.getElementById('modalStats').classList.remove('hidden');
+        }
+
+        function closeStatsModal() {
+            document.getElementById('modalStats').classList.add('hidden');
+        }
+
+        function alertModal(msg) {
+            alert(msg);
+        }
+
+        function playSoftClickSound() {
+            try {
+                const ctx = new (window.AudioContext || window.webkitAudioContext)();
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(400, ctx.currentTime);
+                gain.gain.setValueAtTime(0.05, ctx.currentTime);
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                osc.start();
+                osc.stop(ctx.currentTime + 0.05);
+            } catch(e){}
+        }
+
+        function playTimerEndSound() {
+            try {
+                const ctx = new (window.AudioContext || window.webkitAudioContext)();
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(587.33, ctx.currentTime);
+                osc.frequency.setValueAtTime(880, ctx.currentTime + 0.15);
+                gain.gain.setValueAtTime(0.1, ctx.currentTime);
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                osc.start();
+                osc.stop(ctx.currentTime + 0.4);
+            } catch(e){}
+        }
+    </script>
+</body>
+</html>
